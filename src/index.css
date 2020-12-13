@@ -5,5 +5,9 @@ html {
 body {
   margin: 0;
   font-family: "Lato","HelveticaNeue-Regular","HelveticaNeue Regular","Helvetica Neue","Helvetica",Arial,"Lucida Grande",sans-serif;
-/*color: #8e0280;*/
+}
+
+table {
+  border-spacing: 10px;
+  border: 1px solid gray;
 }
