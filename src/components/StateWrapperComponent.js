@@ -13,7 +13,7 @@ const WrapperDivLayout = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: center;    
 `
 const ControlsLayout = styled.div`    
     height: 10vh;
@@ -33,6 +33,7 @@ const ResultsLayout = styled.div`
     // overflow-y: scroll; 
     background-color: #f2f2f2;
     color: #2a2a2a;
+    padding-top: 3rem;
 `
 // wraps everything but header, 
 // makes api call, 
@@ -42,21 +43,20 @@ const StateWrapperComponent = () => {
     const [searchTerms, setSearchTerms] = useState('')
     const [searchResults, setSearchResults] = useState([])
     const [emptyResults, setEmptyResults] = useState(true)
-    
+
     const handleSearchUpdate = async () => {                
         const query = searchTerms.trim().split(' ').join('%20')             
         const queryString = `https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=&list=search&meta=&continue=-%7C%7Cinfo&utf8=1&formatversion=1&srsearch={${query}}&srnamespace=0&srlimit=100&srwhat=text&srprop=wordcount%7Ctimestamp%7Csnippet%7Csectionsnippet&srsort=relevance`
         await axios.get(queryString)
-            .then(response => {
-                if(response.status == 200) {
-                    setSearchResults(response.data.query.search)
-                    setEmptyResults(false)
-                } else {
-                    setEmptyResults(true)
-                }
-            })            
-    }    
-    handleSearchUpdate('hockey')
+            .then(response => setSearchResults(response.data.query.search))
+            .then(() => setEmptyResults(false))
+            .catch(error => {
+                console.log("Something went wrong with the API request...")
+                console.log('Error Details: ')
+                console.log(error)
+                setEmptyResults(true)
+            })           
+    }        
     const clearResults = () => {
         setSearchResults([])
         setEmptyResults(true)
@@ -64,7 +64,24 @@ const StateWrapperComponent = () => {
     const updateSearchTerms = (newInput) => {
         setSearchTerms(newInput)
     }
-
+    const handleKeyPress = (event) => {        
+        const { key, code, keycode } = event;
+        if ((key === 'Enter' || key === 'Return') ||
+            (code === 'Enter' || code === 'Return') ||
+            (keycode == 13)) {
+            
+                handleSearchUpdate(searchTerms)
+                setEmptyResults(false)
+        }   
+        if ((key === 'Delete' || key === 'Return') ||
+            (code === 'Delete' || code === 'Return') ||
+            (keycode == 8)) {
+            
+                handleSearchUpdate(searchTerms)
+                setEmptyResults(false)
+        }   
+    }
+    
     return (
         <WrapperDivLayout>
             <ControlsLayout>
@@ -76,22 +93,24 @@ const StateWrapperComponent = () => {
                         backgroundColor='#2a2a2a'
                         clickAction={handleSearchUpdate}
                         actionParameter={searchTerms}
+                        onKeyPress={handleKeyPress}                        
                     />
                     <Button                        
-                        text='Clear'
+                        text='Clear Results'
                         color='#2a2a2a'
                         backgroundColor='#f2f2f2'
-                        clickAction={clearResults}                        
+                        clickAction={clearResults}
+                        onKeyPress={handleKeyPress}                        
                     />
                 </ControlsContainer>
             </ControlsLayout>
             <ResultsLayout>
-                {
-                    emptyResults ?
-                        <div>To view results, use the search bar (above) then click 'Search'</div>
-                    :
+                { 
+                    searchResults ?
                         <Results searchData={searchResults} />
-                }            
+                        :
+                        <div>Loading...</div>
+                }                
             </ResultsLayout>
         </WrapperDivLayout>
     )

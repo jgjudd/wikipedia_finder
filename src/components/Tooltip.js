@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
-const StyledButton = styled.button`
+const StyledButton = styled.span`
     background-color: ${`#f2f2f2`};
     color: ${`#2a2a2a`};
     border-radius: 1.5rem;

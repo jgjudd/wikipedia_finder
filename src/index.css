@@ -8,6 +8,12 @@ body {
 }
 
 table {
-  border-spacing: 10px;
+  border-spacing: 0px;
   border: 1px solid gray;
+}
+
+.pagination {
+  position: absolute;
+  bottom: 2rem;
+  left: 40vw;
 }

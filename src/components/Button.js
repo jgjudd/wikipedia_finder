@@ -1,8 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-const Button = ({ text, clickAction, actionParameter }) => {    
+const Button = ({ 
+        text, 
+        clickAction, 
+        actionParameter, 
+        onKeyPress 
+    }) => {    
 
     const StyledButton = styled.button`
         background-color: ${`#f2f2f2`};
@@ -31,8 +36,10 @@ const Button = ({ text, clickAction, actionParameter }) => {
         }
     `
     return (
-        <StyledButton 
+        <StyledButton
+            type='button'
             onClick={() => clickAction(actionParameter)}
+            onKeyPress={onKeyPress}
         >
             {text}
         </StyledButton>
@@ -44,5 +51,5 @@ export default Button
 Button.propTypes = {
     text: PropTypes.string.isRequired,
     clickAction: PropTypes.func.isRequired,
-    actionParameter: PropTypes.array
+    actionParameter: PropTypes.string
 }
